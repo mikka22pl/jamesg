@@ -14,7 +14,9 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
+// https://github.com/buckyroberts/Source-Code-from-Tutorials/tree/master/Java_Intermediate
 public class Server extends JFrame {
 
 	private JTextField userText;
@@ -81,8 +83,14 @@ public class Server extends JFrame {
 		} while (!message.equals("CLIENT - END"));
 	}
 	
-	private void ableToType(boolean value) {
-		
+	private void ableToType(final boolean status) {
+		SwingUtilities.invokeLater(
+				new Runnable() {
+					@Override
+					public void run() {
+						userText.setEditable(status);
+					}
+				});
 	}
 	
 	private void setUpLayout() {
@@ -102,12 +110,27 @@ public class Server extends JFrame {
 		setVisible(true);
 	}
 	
+	// Send a mesage to the client
 	private void sendMessage(String message) {
-		
+		try {
+			output.writeObject("SERVER - " + message);
+			output.flush();
+			showMessage("\nSERVER -" + message);
+		} catch (IOException e) {
+			chatWindow.append("\n ERROR: CANNOT SEND MESSAGE, PLEASE RETRY");
+		}
 	}
-	
-	private void showMessage(String message) {
-		
+
+	// update ChatWindow
+	private void showMessage(final String text) {
+		SwingUtilities.invokeLater(
+				new Runnable() {
+					@Override
+					public void run() {
+						chatWindow.append(text);
+					}
+				}
+		);
 	}
 	
 	private void closeCrap() {
