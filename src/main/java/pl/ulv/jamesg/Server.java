@@ -133,10 +133,6 @@ public class Server extends JFrame {
 		);
 	}
 	
-	private void closeCrap() {
-		
-	}
-	
 	private void closeConnection() {
 		showMessage("\n Closing Connections...\n");
 		ableToType(false);
